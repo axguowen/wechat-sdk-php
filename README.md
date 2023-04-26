@@ -7,3 +7,6 @@
 ~~~
 composer require axguowen/wechat-sdk-php
 ~~~
+
+## 使用
+参考_test文件夹演示
