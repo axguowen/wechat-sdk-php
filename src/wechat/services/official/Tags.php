@@ -1,0 +1,113 @@
+<?php
+// +----------------------------------------------------------------------
+// | WeChat SDK [WeChat SDK for PHP]
+// +----------------------------------------------------------------------
+// | WeChat SDK
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: axguowen <axguowen@qq.com>
+// +----------------------------------------------------------------------
+
+namespace axguowen\wechat\services\official;
+
+use axguowen\WeChat;
+
+/**
+ * 用户标签管理
+ */
+class Tags extends WeChat
+{
+    /**
+     * 获取粉丝标签列表
+     * @access public
+     * @return array
+     */
+    public function getTags()
+    {
+        $url = "https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN";
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpGetForJson($url);
+    }
+
+    /**
+     * 创建粉丝标签
+     * @access public
+     * @param string $name
+     * @return array
+     */
+    public function createTags($name)
+    {
+        $url = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN";
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['tag' => ['name' => $name]]);
+    }
+
+    /**
+     * 更新粉丝标签
+     * @access public
+     * @param integer $id 标签ID
+     * @param string $name 标签名称
+     * @return array
+     */
+    public function updateTags($id, $name)
+    {
+        $url = "https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN";
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['tag' => ['name' => $name, 'id' => $id]]);
+    }
+
+    /**
+     * 删除粉丝标签
+     * @access public
+     * @param int $tagId
+     * @return array
+     */
+    public function deleteTags($tagId)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN';
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['tag' => ['id' => $tagId]]);
+    }
+
+    /**
+     * 批量为用户打标签
+     * @access public
+     * @param array $openids
+     * @param integer $tagId
+     * @return array
+     */
+    public function batchTagging(array $openids, $tagId)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN';
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['openid_list' => $openids, 'tagid' => $tagId]);
+    }
+
+    /**
+     * 批量为用户取消标签
+     * @access public
+     * @param array $openids
+     * @param integer $tagId
+     * @return array
+     */
+    public function batchUntagging(array $openids, $tagId)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN';
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['openid_list' => $openids, 'tagid' => $tagId]);
+    }
+
+    /**
+     * 获取用户身上的标签列表
+     * @access public
+     * @param string $openid
+     * @return array
+     */
+    public function getUserTagId($openid)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=ACCESS_TOKEN';
+        $this->registerApi($url, __FUNCTION__, func_get_args());
+        return $this->httpPostForJson($url, ['openid' => $openid]);
+    }
+}
