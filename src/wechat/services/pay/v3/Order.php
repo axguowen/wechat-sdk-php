@@ -13,6 +13,7 @@ namespace axguowen\wechat\services\pay\v3;
 
 use axguowen\wechat\utils\Tools;
 use axguowen\wechat\utils\crypt\PayCryptor;
+use axguowen\wechat\exception\InvalidResponseException;
 
 /**
  * 直连商户 | 订单支付接口
@@ -46,9 +47,13 @@ class Order extends BasicWePay
         } else {
             // 创建预支付码
             $result = $this->doRequest('POST', $types[$type], json_encode($data, JSON_UNESCAPED_UNICODE), true);
-            if (empty($result['prepay_id'])) return $result;
+            if (empty($result['h5_url']) && empty($result['code_url']) && empty($result['prepay_id'])) {
+                $message = isset($result['code']) ? "[ {$result['code']} ] " : '';
+                $message .= isset($result['message']) ? $result['message'] : json_encode($result, JSON_UNESCAPED_UNICODE);
+                throw new InvalidResponseException($message);
+            }
             // 支付参数签名
-            $time = (string)time();
+            $time = strval(time());
             $appid = $this->config['appid'];
             $prepayId = $result['prepay_id'];
             $nonceStr = Tools::createNoncestr();
