@@ -14,6 +14,7 @@ namespace axguowen\wechat\services\pay\v3;
 use axguowen\wechat\utils\Tools;
 use axguowen\wechat\exception\InvalidArgumentException;
 use axguowen\wechat\exception\InvalidResponseException;
+use axguowen\wechat\exception\InvalidDecryptException;
 
 /**
  * 微信支付基础类V3
@@ -256,6 +257,40 @@ abstract class BasicWePay
             return base64_decode(Tools::getCache($name) ?: '');
         } else {
             return Tools::setCache($name, base64_encode($content), 7200);
+        }
+    }
+
+    /**
+     * RSA加密处理
+     * @access protected
+     * @param string $string
+     * @return string
+     * @throws InvalidDecryptException
+     */
+    protected function rsaEncode($string)
+    {
+        $publicKey = file_get_contents($this->config['cert_public']);
+        if (openssl_public_encrypt($string, $encrypted, $publicKey, OPENSSL_PKCS1_OAEP_PADDING)) {
+            return base64_encode($encrypted);
+        } else {
+            throw new InvalidDecryptException('Rsa Encrypt Error.');
+        }
+    }
+
+    /**
+     * RSA 解密处理
+     * @access protected
+     * @param string $string
+     * @return string
+     * @throws InvalidDecryptException
+     */
+    protected function rsaDecode($string)
+    {
+        $private = file_get_contents($this->config['cert_private']);
+        if (openssl_private_decrypt(base64_decode($string), $content, $private, OPENSSL_PKCS1_OAEP_PADDING)) {
+            return $content;
+        } else {
+            throw new InvalidDecryptException('Rsa Decrypt Error.');
         }
     }
 }
