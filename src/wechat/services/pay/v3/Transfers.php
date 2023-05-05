@@ -24,6 +24,11 @@ class Transfers extends BasicWePay
      */
     public function batchs($body)
     {
+         if (isset($body['transfer_detail_list']) && is_array($body['transfer_detail_list'])) {
+            foreach ($body['transfer_detail_list'] as &$item) if (isset($item['user_name'])) {
+                $item['user_name'] = $this->rsaEncode($item['user_name']);
+            }
+        }
         return $this->doRequest('POST', '/v3/transfer/batches', json_encode($body, JSON_UNESCAPED_UNICODE), true);
     }
 
