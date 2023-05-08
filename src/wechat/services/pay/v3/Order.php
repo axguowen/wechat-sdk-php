@@ -98,15 +98,14 @@ class Order extends BasicWePay
     /**
      * 支付通知解析
      * @access public
+     * @param array $data
      * @return array
      */
-    public function notify(array $parameters = [])
+    public function notify(array $data = [])
     {
-        if (empty($parameters)) {
-            $body = file_get_contents('php://input');
+        if (empty($data)) {
+            $body = Tools::getRawInput();
             $data = json_decode($body, true);
-        } else {
-            $data = $parameters;
         }
 
         if (isset($data['resource'])) {

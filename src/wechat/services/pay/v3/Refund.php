@@ -44,13 +44,14 @@ class Refund extends BasicWePay
     /**
      * 获取退款通知
      * @access public
+     * @param string $xml
      * @return array
      * @throws \axguowen\wechat\exception\InvalidDecryptException
      * @throws \axguowen\wechat\exception\InvalidResponseException
      */
-    public function notify()
+    public function notify($xml = '')
     {
-        $data = Tools::xml2arr(file_get_contents("php://input"));
+        $data = Tools::xml2arr(empty($xml) ? Tools::getRawInput() : $xml);
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS') {
             throw new \axguowen\wechat\exception\InvalidResponseException('获取退款通知XML失败！');
         }
