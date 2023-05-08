@@ -61,6 +61,7 @@ class Tools
 
     /**
      * 获取输入对象
+     * @access public
      * @return false|mixed|string
      */
     public static function getRawInput()

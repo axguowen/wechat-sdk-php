@@ -14,6 +14,7 @@ namespace axguowen\wechat\services\pay\v3;
 use axguowen\wechat\utils\Tools;
 use axguowen\wechat\utils\crypt\PayCryptor;
 use axguowen\wechat\exception\InvalidResponseException;
+use axguowen\wechat\exception\InvalidDecryptException;
 
 /**
  * 直连商户 | 订单支付接口
@@ -143,6 +144,31 @@ class Order extends BasicWePay
     {
         $path = "/v3/refund/domestic/refunds/{$refundNo}";
         return $this->doRequest('GET', $path, '', true);
+    }
+
+    /**
+     * 获取退款通知
+     * @access public
+     * @param string $xml
+     * @return array
+     * @return array
+     * @throws \axguowen\wechat\exception\InvalidDecryptException
+     * @throws \axguowen\wechat\exception\InvalidResponseException
+     */
+    public function notifyRefund($xml = '')
+    {
+        $data = Tools::xml2arr(empty($xml) ? Tools::getRawInput() : $xml);
+        if (empty($data['return_code']) || $data['return_code'] !== 'SUCCESS') {
+            throw new InvalidResponseException('获取退款通知失败！');
+        }
+        try {
+            $decrypt = base64_decode($data['req_info']);
+            $response = openssl_decrypt($decrypt, 'aes-256-ecb', md5($this->config['mch_v3_key']), OPENSSL_RAW_DATA);
+            $data['result'] = Tools::xml2arr($response);
+            return $data;
+        } catch (\Exception $exception) {
+            throw new InvalidDecryptException($exception->getMessage(), $exception->getCode());
+        }
     }
 
     /**
