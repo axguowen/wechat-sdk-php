@@ -14,7 +14,7 @@ namespace axguowen\wechat\services\pay\v3;
 use axguowen\wechat\utils\Tools;
 
 /**
- * 电商接口 | 订单退款接口
+ * 订单退款接口
  */
 class Refund extends BasicWePay
 {
@@ -26,7 +26,8 @@ class Refund extends BasicWePay
      */
     public function create($data)
     {
-        return $this->doRequest('POST', '/v3/ecommerce/refunds/apply', json_encode($data, JSON_UNESCAPED_UNICODE), true);
+        return Order::instance($this->config)->createRefund($data);
+        // return $this->doRequest('POST', '/v3/ecommerce/refunds/apply', json_encode($data, JSON_UNESCAPED_UNICODE), true);
     }
 
     /**
@@ -37,8 +38,9 @@ class Refund extends BasicWePay
      */
     public function query($refundNo)
     {
-        $pathinfo = "/v3/ecommerce/refunds/out-refund-no/{$refundNo}";
-        return $this->doRequest('GET', "{$pathinfo}?sub_mchid={$this->config['mch_id']}", '', true);
+        return Order::instance($this->config)->queryRefund($refundNo);
+        // $pathinfo = "/v3/ecommerce/refunds/out-refund-no/{$refundNo}";
+        // return $this->doRequest('GET', "{$pathinfo}?sub_mchid={$this->config['mch_id']}", '', true);
     }
 
     /**
@@ -51,6 +53,8 @@ class Refund extends BasicWePay
      */
     public function notify($xml = '')
     {
+        return Order::instance($this->config)->notifyRefund($xml);
+        /*/
         $data = Tools::xml2arr(empty($xml) ? Tools::getRawInput() : $xml);
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS') {
             throw new \axguowen\wechat\exception\InvalidResponseException('获取退款通知XML失败！');
@@ -64,5 +68,6 @@ class Refund extends BasicWePay
         } catch (\Exception $exception) {
             throw new \axguowen\wechat\exception\InvalidDecryptException($exception->getMessage(), $exception->getCode());
         }
+        //*/
     }
 }
