@@ -26,7 +26,7 @@ class PrpCryptor
      */
     public function __construct($key)
     {
-        $this->key = base64_decode("{$key}=");
+        $this->key = base64_decode($key . '=');
     }
 
     /**
@@ -42,7 +42,7 @@ class PrpCryptor
             $random = $this->getRandomStr();
             $iv = substr($this->key, 0, 16);
             $pkcEncoder = new PKCS7Encoder();
-            $text = $pkcEncoder->encode($random . pack("N", strlen($text)) . $text . $appid);
+            $text = $pkcEncoder->encode($random . pack('N', strlen($text)) . $text . $appid);
             $encrypted = openssl_encrypt($text, 'AES-256-CBC', substr($this->key, 0, 32), OPENSSL_ZERO_PADDING, $iv);
             return [ErrorCode::$OK, $encrypted];
         } catch (\Exception $e) {
@@ -71,7 +71,7 @@ class PrpCryptor
                 return [ErrorCode::$DecryptAESError, null];
             }
             $content = substr($result, 16, strlen($result));
-            $len_list = unpack("N", substr($content, 0, 4));
+            $len_list = unpack('N', substr($content, 0, 4));
             $xml_len = $len_list[1];
             return [0, substr($content, 4, $xml_len), substr($content, $xml_len + 4)];
         } catch (\Exception $e) {
@@ -81,13 +81,13 @@ class PrpCryptor
 
     /**
      * 随机生成16位字符串
-     * @access public
+     * @access protected
      * @param string $str
      * @return string 生成的字符串
      */
-    function getRandomStr($str = "")
+    protected function getRandomStr($str = '')
     {
-        $str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+        $str_pol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
         $max = strlen($str_pol) - 1;
         for ($i = 0; $i < 16; $i++) {
             $str .= $str_pol[mt_rand(0, $max)];
