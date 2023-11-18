@@ -123,7 +123,7 @@ class DataArray implements ArrayAccess
      * 获取配置项参数
      * @access public
      * @param string|null $offset
-     * @return array|string|null|mixed
+     * @return mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset = null)

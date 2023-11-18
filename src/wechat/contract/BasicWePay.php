@@ -155,7 +155,7 @@ class BasicWePay
      * @access public
      * @param array $data
      * @param bool $isReturn
-     * @return string
+     * @return string|void
      */
     public function toXml(array $data, $isReturn = false)
     {

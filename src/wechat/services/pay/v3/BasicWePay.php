@@ -15,6 +15,7 @@ use axguowen\wechat\utils\Tools;
 use axguowen\wechat\exception\InvalidArgumentException;
 use axguowen\wechat\exception\InvalidResponseException;
 use axguowen\wechat\exception\InvalidDecryptException;
+use axguowen\wechat\exception\LocalCacheException;
 
 /**
  * 微信支付基础类V3
@@ -34,22 +35,32 @@ abstract class BasicWePay
     static $cache = [];
 
     /**
+     * 自动配置平台证书
+     * @var bool
+     */
+    protected $autoCert = true;
+
+    /**
      * 配置参数
      * @var array
      */
     protected $config = [
-        'appid'        => '', // 微信绑定APPID，需配置
-        'mch_id'       => '', // 微信商户编号，需要配置
-        'mch_v3_key'   => '', // 微信商户密钥，需要配置
-        'cert_serial'  => '', // 商户证书序号，无需配置
-        'cert_public'  => '', // 商户公钥内容，需要配置
-        'cert_private' => '', // 商户密钥内容，需要配置
+        'appid'           => '', // 微信绑定APPID，需配置
+        'mch_id'          => '', // 微信商户编号，需要配置
+        'mch_v3_key'      => '', // 微信商户密钥，需要配置
+        'cert_serial'     => '', // 商户证书序号，无需配置
+        'cert_public'     => '', // 商户公钥内容，需要配置
+        'cert_private'    => '', // 商户密钥内容，需要配置
+        'mp_cert_serial'  => '', // 平台证书序号，无需配置
+        'mp_cert_content' => '', // 平台证书内容，无需配置
     ];
 
     /**
      * constructor
      * @access public
      * @param array $options [mch_id, mch_v3_key, cert_public, cert_private]
+     * @throws InvalidResponseException
+     * @throws LocalCacheException
      */
     public function __construct(array $options = [])
     {
@@ -87,7 +98,6 @@ abstract class BasicWePay
         $this->config['mch_v3_key'] = $options['mch_v3_key'];
         $this->config['cert_public'] = $options['cert_public'];
         $this->config['cert_private'] = $options['cert_private'];
-
         if (empty($options['cert_serial'])) {
             $this->config['cert_serial'] = openssl_x509_parse($this->config['cert_public'], true)['serialNumberHex'];
         } else {
@@ -100,6 +110,11 @@ abstract class BasicWePay
 
         if (!empty($options['cache_path'])) {
             Tools::$cache_path = $options['cache_path'];
+        }
+
+        // 自动配置平台证书
+        if ($this->autoCert) {
+            $this->_autoCert();
         }
 
         // 服务商参数支持
@@ -122,6 +137,8 @@ abstract class BasicWePay
      * @access public
      * @param array $config
      * @return static
+     * @throws InvalidResponseException
+     * @throws LocalCacheException
      */
     public static function instance($config)
     {
@@ -139,7 +156,7 @@ abstract class BasicWePay
      * @param boolean $verify 是否验证
      * @param boolean $isjson 返回JSON
      * @return array|string
-     * @throws \axguowen\wechat\exception\InvalidResponseException
+     * @throws InvalidResponseException
      */
     public function doRequest($method, $pathinfo, $jsondata = '', $verify = false, $isjson = true)
     {
@@ -158,7 +175,7 @@ abstract class BasicWePay
                 'Content-Type: application/json',
                 'User-Agent: https://thinkadmin.top',
                 "Authorization: WECHATPAY2-SHA256-RSA2048 {$token}",
-                "Wechatpay-Serial: {$this->config['cert_serial']}"
+                "Wechatpay-Serial: {$this->config['mp_cert_serial']}"
             ],
         ]);
 
@@ -240,34 +257,83 @@ abstract class BasicWePay
      * @param string $serial 证书序号
      * @return int
      */
-    protected function signVerify($data, $sign, $serial = '')
+    protected function signVerify($data, $sign, $serial)
     {
-        $cert = $this->tmpFile($serial);
-        if (empty($cert)) {
-            Cert::instance($this->config)->download();
-            $cert = $this->tmpFile($serial);
-        }
+        $cert = $this->_getCert($serial);
         return @openssl_verify($data, base64_decode($sign), openssl_x509_read($cert), 'sha256WithRSAEncryption');
+    }
+
+    /**
+     * 获取平台证书
+     * @param string $serial
+     * @return string
+     * @throws InvalidResponseException
+     * @throws LocalCacheException
+     */
+    protected function _getCert($serial = '')
+    {
+        $certs = $this->tmpFile("{$this->config['mch_id']}_certs");
+        if (empty($certs) || empty($certs[$serial]['content'])) {
+            Cert::instance($this->config)->download();
+            $certs = $this->tmpFile("{$this->config['mch_id']}_certs");
+        }
+        if (empty($certs[$serial]['content']) || $certs[$serial]['expire'] < time()) {
+            throw new InvalidResponseException("读取平台证书失败！");
+        } else {
+            return $certs[$serial]['content'];
+        }
+    }
+
+    /**
+     * 自动配置平台证书
+     * @return void
+     * @throws InvalidResponseException
+     * @throws LocalCacheException
+     */
+    protected function _autoCert()
+    {
+        $certs = $this->tmpFile("{$this->config['mch_id']}_certs");
+        if (is_array($certs)) foreach ($certs as $k => $v) {
+            if ($v['expire'] < time()) unset($certs[$k]);
+        }
+        if (empty($certs)) {
+            Cert::instance($this->config)->download();
+            $certs = $this->tmpFile("{$this->config['mch_id']}_certs");
+        }
+        if (empty($certs) || !is_array($certs)) {
+            throw new InvalidResponseException("读取平台证书失败！");
+        }
+        foreach ($certs as $k => $v) if ($v['expire'] > time() + 10) {
+            $this->config['mp_cert_serial'] = $k;
+            $this->config['mp_cert_content'] = $v['content'];
+            break;
+        }
+        if (empty($this->config['mp_cert_serial']) || empty($this->config['mp_cert_content'])) {
+            throw new InvalidResponseException("自动配置平台证书失败！");
+        }
     }
 
     /**
      * 写入或读取临时文件
      * @access protected
-     * @param string $name
-     * @param null|string $content
-     * @return string
+     * @param null|array|string $content
+     * @param integer $expire
+     * @return array|string
      */
-    protected function tmpFile($name, $content = null)
+    protected function tmpFile($name, $content = null, $expire = 7200)
     {
         if (is_null($content)) {
-            return base64_decode(Tools::getCache($name) ?: '');
+            $text = Tools::getCache($name);
+            if (empty($text)) return '';
+            $json = json_decode(Tools::getCache($name) ?: '', true);
+            return isset($json[0]) ? $json[0] : '';
         } else {
-            return Tools::setCache($name, base64_encode($content), 7200);
+            return Tools::setCache($name, json_encode([$content], JSON_UNESCAPED_UNICODE), $expire);
         }
     }
 
     /**
-     * RSA加密处理
+     * RSA加密处理-平台证书
      * @access protected
      * @param string $string
      * @return string
@@ -275,28 +341,11 @@ abstract class BasicWePay
      */
     protected function rsaEncode($string)
     {
-        $publicKey = file_get_contents($this->config['cert_public']);
+        $publicKey = $this->config['mp_cert_content'];
         if (openssl_public_encrypt($string, $encrypted, $publicKey, OPENSSL_PKCS1_OAEP_PADDING)) {
             return base64_encode($encrypted);
         } else {
             throw new InvalidDecryptException('Rsa Encrypt Error.');
-        }
-    }
-
-    /**
-     * RSA 解密处理
-     * @access protected
-     * @param string $string
-     * @return string
-     * @throws InvalidDecryptException
-     */
-    protected function rsaDecode($string)
-    {
-        $private = file_get_contents($this->config['cert_private']);
-        if (openssl_private_decrypt(base64_decode($string), $content, $private, OPENSSL_PKCS1_OAEP_PADDING)) {
-            return $content;
-        } else {
-            throw new InvalidDecryptException('Rsa Decrypt Error.');
         }
     }
 }

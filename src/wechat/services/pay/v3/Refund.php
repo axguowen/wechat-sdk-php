@@ -12,6 +12,9 @@
 namespace axguowen\wechat\services\pay\v3;
 
 use axguowen\wechat\utils\Tools;
+use axguowen\wechat\exception\InvalidDecryptException;
+use axguowen\wechat\exception\InvalidResponseException;
+use axguowen\wechat\exception\LocalCacheException;
 
 /**
  * 订单退款接口
@@ -46,18 +49,19 @@ class Refund extends BasicWePay
     /**
      * 获取退款通知
      * @access public
-     * @param string $xml
+     * @param mixed $xml
      * @return array
-     * @throws \axguowen\wechat\exception\InvalidDecryptException
-     * @throws \axguowen\wechat\exception\InvalidResponseException
+     * @throws InvalidDecryptException
+     * @throws InvalidResponseException
+     * @throws LocalCacheException
      */
-    public function notify($xml = '')
+    public function notify($xml = [])
     {
-        return Order::instance($this->config)->notifyRefund($xml);
+        return Order::instance($this->config)->notify($xml);
         /*/
         $data = Tools::xml2arr(empty($xml) ? Tools::getRawInput() : $xml);
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS') {
-            throw new \axguowen\wechat\exception\InvalidResponseException('获取退款通知XML失败！');
+            throw new InvalidResponseException('获取退款通知XML失败！');
         }
         try {
             $key = md5($this->config['mch_v3_key']);
@@ -66,7 +70,7 @@ class Refund extends BasicWePay
             $data['result'] = Tools::xml2arr($response);
             return $data;
         } catch (\Exception $exception) {
-            throw new \axguowen\wechat\exception\InvalidDecryptException($exception->getMessage(), $exception->getCode());
+            throw new InvalidDecryptException($exception->getMessage(), $exception->getCode());
         }
         //*/
     }

@@ -62,7 +62,7 @@ class Order extends BasicWePay
                 return ['partnerId' => $this->config['mch_id'], 'prepayId' => $result['prepay_id'], 'package' => 'Sign=WXPay', 'nonceStr' => $nonceStr, 'timeStamp' => $time, 'sign' => $sign];
             } elseif ($type === 'jsapi') {
                 $sign = $this->signBuild(join("\n", [$appid, $time, $nonceStr, "prepay_id={$result['prepay_id']}", '']));
-                return ['appId' => $appid, 'timeStamp' => $time, 'nonceStr' => $nonceStr, 'package' => "prepay_id={$result['prepay_id']}", 'signType' => 'RSA', 'paySign' => $sign];
+                return ['appId' => $appid, 'timestamp' => $time, 'timeStamp' => $time, 'nonceStr' => $nonceStr, 'package' => "prepay_id={$result['prepay_id']}", 'signType' => 'RSA', 'paySign' => $sign];
             } else {
                 return $result;
             }
@@ -104,8 +104,7 @@ class Order extends BasicWePay
     public function notify(array $data = [])
     {
         if (empty($data)) {
-            $body = Tools::getRawInput();
-            $data = json_decode($body, true);
+            $data = json_decode(Tools::getRawInput(), true);
         }
 
         if (isset($data['resource'])) {
@@ -148,26 +147,14 @@ class Order extends BasicWePay
     /**
      * 获取退款通知
      * @access public
-     * @param string $xml
+     * @param mixed $data
      * @return array
-     * @return array
-     * @throws \axguowen\wechat\exception\InvalidDecryptException
-     * @throws \axguowen\wechat\exception\InvalidResponseException
+     * @throws InvalidDecryptException
+     * @deprecated 直接使用 Notify 方法
      */
-    public function notifyRefund($xml = '')
+    public function notifyRefund($data = [])
     {
-        $data = Tools::xml2arr(empty($xml) ? Tools::getRawInput() : $xml);
-        if (empty($data['return_code']) || $data['return_code'] !== 'SUCCESS') {
-            throw new InvalidResponseException('获取退款通知失败！');
-        }
-        try {
-            $decrypt = base64_decode($data['req_info']);
-            $response = openssl_decrypt($decrypt, 'aes-256-ecb', md5($this->config['mch_v3_key']), OPENSSL_RAW_DATA);
-            $data['result'] = Tools::xml2arr($response);
-            return $data;
-        } catch (\Exception $exception) {
-            throw new InvalidDecryptException($exception->getMessage(), $exception->getCode());
-        }
+        return $this->notify($data);
     }
 
     /**
