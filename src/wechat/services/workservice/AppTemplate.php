@@ -39,11 +39,11 @@ class AppTemplate extends BasicWeWorkService
         // 通过接口获取
         list($appid, $secret, $ticket) = [$this->config->get('appid'), $this->config->get('appsecret'), $this->config->get('suite_ticket')];
         $url = "https://qyapi.weixin.qq.com/cgi-bin/service/get_suite_token";
-        $result = Tools::json2arr(Tools::post($url, [
+        $result = Tools::json2arr(Tools::post($url, Tools::arr2json([
             'suite_id' => $appid,
             'suite_secret' => $secret,
             'suite_ticket' => $ticket,
-        ]));
+        ])));
         if (isset($result['suite_access_token']) && $result['suite_access_token']) {
             Tools::setCache($cache_key, $result['suite_access_token'], 7000);
         }
