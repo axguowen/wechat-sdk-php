@@ -15,9 +15,9 @@ use axguowen\wechat\contract\BasicWeWorkService;
 use axguowen\wechat\utils\Tools;
 
 /**
- * 企业微信服务商基础类
+ * 企业微信服务商代开发应用模板类
  */
-class AppTemplate extends BasicWeWorkService
+class DevApptpl extends BasicWeWorkService
 {
     /**
      * 获取访问 AccessToken
