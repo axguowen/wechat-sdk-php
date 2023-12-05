@@ -38,7 +38,7 @@ class BasicWeWorkService extends WeChat
         }
         // 通过接口获取
         list($appid, $secret) = [$this->config->get('appid'), $this->config->get('appsecret')];
-        $url = "https://qyapi.weixin.qq.com/cgi-bin/service/get_provider_token";
+        $url = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_provider_token';
         $result = Tools::json2arr(Tools::post($url, Tools::arr2json([
             'corpid' => $appid,
             'provider_secret' => $secret,
