@@ -47,7 +47,7 @@ class CustomerAcquisition extends BasicWeWorkService
 
         // 通过接口获取
         list($corpid, $corpsecret) = [$this->config->get('corpid'), $this->config->get('corpsecret')];
-        $url = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_corp_token?suite_access_token=SUITE_ACCESS_TOKEN';
+        $url = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_corp_token?suite_access_token=' . $serviceAccessToken;
         $result = Tools::json2arr(Tools::post($url, Tools::arr2json([
             'auth_corpid' => $corpid,
             'permanent_code' => $corpsecret,
