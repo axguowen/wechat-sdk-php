@@ -36,7 +36,7 @@ class CustomerAcquisition extends BasicWeWorkService
             return $this->accessToken;
         }
         // 构造缓存键
-        $cache_key = $this->config->get('appid') . '_access_token';
+        $cache_key = $this->config->get('corpid') . '_access_token';
         // 从缓存获取
         $this->accessToken = Tools::getCache($cache_key);
         if (!empty($this->accessToken)){
