@@ -64,12 +64,12 @@ class Script extends WeChat
      * 获取JsApi使用签名
      * @access public
      * @param string $url 网页的URL
+     * @param array $jsApiList 需初始化的 jsApiList
      * @param string $appid 用于多个appid时使用(可空)
      * @param string $ticket 强制指定ticket
-     * @param array $jsApiList 需初始化的 jsApiList
      * @return array
      */
-    public function getJsSign($url, $appid = null, $ticket = null, $jsApiList = null)
+    public function getJsSign($url, $jsApiList = null, $appid = null, $ticket = null)
     {
         list($url,) = explode('#', $url);
         is_null($ticket) && $ticket = $this->getTicket('jsapi');
