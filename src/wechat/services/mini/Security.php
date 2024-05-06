@@ -28,7 +28,7 @@ class Security extends WeChat
     public function imgSecCheck($media)
     {
         $url = 'https://api.weixin.qq.com/wxa/img_sec_check?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['media' => $media], false);
+        return $this->callPostApi($url, ['media' => $media], false, ['headers' => ['Content-Type: application/octet-stream']]);
     }
 
     /**
