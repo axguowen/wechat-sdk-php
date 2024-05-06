@@ -29,8 +29,7 @@ class User extends WeChat
     public function updateMark($openid, $remark)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN';
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['openid' => $openid, 'remark' => $remark]);
+        return $this->callPostApi($url, ['openid' => $openid, 'remark' => $remark]);
     }
 
     /**
@@ -43,8 +42,7 @@ class User extends WeChat
     public function getUserInfo($openid, $lang = 'zh_CN')
     {
         $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid={$openid}&lang={$lang}";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        return $this->callGetApi($url);
     }
 
     /**
@@ -61,48 +59,44 @@ class User extends WeChat
         foreach ($openids as $openid) {
             $data['user_list'][] = ['openid' => $openid, 'lang' => $lang];
         }
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
      * 获取用户列表
      * @access public
-     * @param string $next_openid
+     * @param string $nextOpenid
      * @return array
      */
-    public function getUserList($next_openid = '')
+    public function getUserList($nextOpenid = '')
     {
-        $url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid={$next_openid}";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        $url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid={$nextOpenid}";
+        return $this->callGetApi($url);
     }
 
     /**
      * 获取标签下粉丝列表
      * @access public
      * @param integer $tagid 标签ID
-     * @param string $next_openid 第一个拉取的OPENID
+     * @param string $nextOpenid 第一个拉取的OPENID
      * @return array
      */
-    public function getUserListByTag($tagid, $next_openid = '')
+    public function getUserListByTag($tagid, $nextOpenid = '')
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=ACCESS_TOKEN';
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['tagid' => $tagid, 'next_openid' => $next_openid]);
+        return $this->callPostApi($url, ['tagid' => $tagid, 'next_openid' => $nextOpenid]);
     }
 
     /**
      * 获取公众号的黑名单列表
      * @access public
-     * @param string $begin_openid
+     * @param string $beginOpenid
      * @return array
      */
-    public function getBlackList($begin_openid = '')
+    public function getBlackList($beginOpenid = '')
     {
         $url = "https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['begin_openid' => $begin_openid]);
+        return $this->callPostApi($url, ['begin_openid' => $beginOpenid]);
     }
 
     /**
@@ -114,8 +108,7 @@ class User extends WeChat
     public function batchBlackList(array $openids)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['openid_list' => $openids]);
+        return $this->callPostApi($url, ['openid_list' => $openids]);
     }
 
     /**
@@ -127,8 +120,6 @@ class User extends WeChat
     public function batchUnblackList(array $openids)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['openid_list' => $openids]);
+        return $this->callPostApi($url, ['openid_list' => $openids]);
     }
-
 }

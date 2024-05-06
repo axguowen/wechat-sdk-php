@@ -40,8 +40,7 @@ class Qrcode extends WeChat
             $data['action_name'] = is_integer($scene) ? 'QR_LIMIT_SCENE' : 'QR_LIMIT_STR_SCENE';
         }
         $url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
@@ -64,7 +63,6 @@ class Qrcode extends WeChat
     public function shortUrl($longUrl)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['action' => 'long2short', 'long_url' => $longUrl]);
+        return $this->callPostApi($url, ['action' => 'long2short', 'long_url' => $longUrl]);
     }
 }

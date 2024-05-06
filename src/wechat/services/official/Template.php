@@ -20,15 +20,14 @@ class Template extends WeChat
 {
     /**
      * 设置所属行业
-     * @param string $industry_id1 公众号模板消息所属行业编号
-     * @param string $industry_id2 公众号模板消息所属行业编号
+     * @param string $industryId1 公众号模板消息所属行业编号
+     * @param string $industryId2 公众号模板消息所属行业编号
      * @return array
      */
-    public function setIndustry($industry_id1, $industry_id2)
+    public function setIndustry($industryId1, $industryId2)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['industry_id1' => $industry_id1, 'industry_id2' => $industry_id2]);
+        return $this->callPostApi($url, ['industry_id1' => $industryId1, 'industry_id2' => $industryId2]);
     }
 
     /**
@@ -38,8 +37,7 @@ class Template extends WeChat
     public function getIndustry()
     {
         $url = "https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        return $this->callGetApi($url);
     }
 
     /**
@@ -51,8 +49,7 @@ class Template extends WeChat
     public function addTemplate($templateIdShort, $keywordNameList = [])
     {
         $url = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['template_id_short' => $templateIdShort, 'keyword_name_list' => $keywordNameList]);
+        return $this->callPostApi($url, ['template_id_short' => $templateIdShort, 'keyword_name_list' => $keywordNameList]);
     }
 
     /**
@@ -62,20 +59,18 @@ class Template extends WeChat
     public function getAllPrivateTemplate()
     {
         $url = "https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        return $this->callGetApi($url);
     }
 
     /**
      * 删除模板ID
-     * @param string $tpl_id 公众帐号下模板消息ID
+     * @param string $tplId 公众帐号下模板消息ID
      * @return array
      */
-    public function delPrivateTemplate($tpl_id)
+    public function delPrivateTemplate($tplId)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['template_id' => $tpl_id]);
+        return $this->callPostApi($url, ['template_id' => $tplId]);
     }
 
     /**
@@ -86,9 +81,6 @@ class Template extends WeChat
     public function send(array $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
-
-
 }

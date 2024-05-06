@@ -27,52 +27,46 @@ class CustomService extends WeChat
      */
     public function addAccount($kf_account, $nickname)
     {
-        $data = ['kf_account' => $kf_account, 'nickname' => $nickname];
         $url = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, ['kf_account' => $kf_account, 'nickname' => $nickname]);
     }
 
     /**
      * 修改客服帐号
      * @access public
-     * @param string $kf_account 客服账号
+     * @param string $kfAccount 客服账号
      * @param string $nickname 客服昵称
      * @return array
      */
-    public function updateAccount($kf_account, $nickname)
+    public function updateAccount($kfAccount, $nickname)
     {
-        $data = ['kf_account' => $kf_account, 'nickname' => $nickname];
         $url = "https://api.weixin.qq.com/customservice/kfaccount/update?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, ['kf_account' => $kfAccount, 'nickname' => $nickname]);
     }
 
     /**
      * 删除客服帐号
      * @access public
-     * @param string $kf_account 客服账号
+     * @param string $kfAccount 客服账号
      * @return array
      */
-    public function deleteAccount($kf_account)
+    public function deleteAccount($kfAccount)
     {
-        $data = ['kf_account' => $kf_account];
         $url = "https://api.weixin.qq.com/customservice/kfaccount/del?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, ['kf_account' => $kfAccount]);
     }
 
     /**
      * 邀请绑定客服帐号
      * @access public
-     * @param string $kf_account 完整客服帐号，格式为：帐号前缀@公众号微信号
-     * @param string $invite_wx 接收绑定邀请的客服微信号
+     * @param string $kfAccount 完整客服帐号，格式为：帐号前缀@公众号微信号
+     * @param string $inviteWx 接收绑定邀请的客服微信号
      * @return array
      */
-    public function inviteWorker($kf_account, $invite_wx)
+    public function inviteWorker($kfAccount, $inviteWx)
     {
         $url = 'https://api.weixin.qq.com/customservice/kfaccount/inviteworker?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['kf_account' => $kf_account, 'invite_wx' => $invite_wx]);
+        return $this->callPostApi($url, ['kf_account' => $kfAccount, 'invite_wx' => $inviteWx]);
     }
 
     /**
@@ -83,8 +77,7 @@ class CustomService extends WeChat
     public function getAccountList()
     {
         $url = "https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        return $this->callGetApi($url);
     }
 
     /**
@@ -95,8 +88,7 @@ class CustomService extends WeChat
     public function getOnlineAccountList()
     {
         $url = "https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpGetForJson($url);
+        return $this->callGetApi($url);
     }
 
     /**
@@ -108,9 +100,8 @@ class CustomService extends WeChat
      */
     public function uploadHeadimg($kf_account, $image)
     {
-        $url = "http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=ACCESS_TOKEN&kf_account={$kf_account}";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['media' => Tools::createCurlFile($image)]);
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=ACCESS_TOKEN&kf_account={$kf_account}";
+        return $this->callPostApi($url, ['media' => Tools::createCurlFile($image)], false);
     }
 
     /**
@@ -122,8 +113,7 @@ class CustomService extends WeChat
     public function send(array $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
@@ -136,8 +126,7 @@ class CustomService extends WeChat
     public function typing($openid, $command = 'Typing')
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/custom/typing?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['touser' => $openid, 'command' => $command]);
+        return $this->callPostApi($url, ['touser' => $openid, 'command' => $command]);
     }
 
     /**
@@ -149,8 +138,7 @@ class CustomService extends WeChat
     public function massSendAll(array $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
@@ -162,8 +150,7 @@ class CustomService extends WeChat
     public function massSend(array $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
@@ -175,11 +162,10 @@ class CustomService extends WeChat
      */
     public function massDelete($msg_id, $article_idx = null)
     {
+        $url = "https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN";
         $data = ['msg_id' => $msg_id];
         is_null($article_idx) || $data['article_idx'] = $article_idx;
-        $url = "https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
@@ -191,21 +177,19 @@ class CustomService extends WeChat
     public function massPreview(array $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, $data);
+        return $this->callPostApi($url, $data);
     }
 
     /**
      * 查询群发消息发送状态【订阅号与服务号认证后均可用】
      * @access public
-     * @param integer $msg_id 群发消息后返回的消息id
+     * @param integer $msgId 群发消息后返回的消息id
      * @return array
      */
-    public function massGet($msg_id)
+    public function massGet($msgId)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['msg_id' => $msg_id]);
+        return $this->callPostApi($url, ['msg_id' => $msgId]);
     }
 
     /**
@@ -216,8 +200,7 @@ class CustomService extends WeChat
     public function massGetSeed()
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/speed/get?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, []);
+        return $this->callPostApi($url, []);
     }
 
     /**
@@ -229,9 +212,6 @@ class CustomService extends WeChat
     public function massSetSeed($speed)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/mass/speed/set?access_token=ACCESS_TOKEN";
-        $this->registerApi($url, __FUNCTION__, func_get_args());
-        return $this->httpPostForJson($url, ['speed' => $speed]);
+        return $this->callPostApi($url, ['speed' => $speed]);
     }
-
-
 }
