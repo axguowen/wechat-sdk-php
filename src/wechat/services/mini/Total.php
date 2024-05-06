@@ -21,130 +21,130 @@ class Total extends WeChat
     /**
      * 数据分析接口
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，限定查询1天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，限定查询1天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidDailySummarytrend($begin_date, $end_date)
+    public function getWeanalysisAppidDailySummarytrend($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappiddailysummarytrend?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 访问分析
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，限定查询1天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，限定查询1天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidDailyVisittrend($begin_date, $end_date)
+    public function getWeanalysisAppidDailyVisittrend($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappiddailyvisittrend?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 周趋势
      * @access public
-     * @param string $begin_date 开始日期，为周一日期
-     * @param string $end_date 结束日期，为周日日期，限定查询一周数据
+     * @param string $beginDate 开始日期，为周一日期
+     * @param string $endDate 结束日期，为周日日期，限定查询一周数据
      * @return array
      */
-    public function getWeanalysisAppidWeeklyVisittrend($begin_date, $end_date)
+    public function getWeanalysisAppidWeeklyVisittrend($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidweeklyvisittrend?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 月趋势
      * @access public
-     * @param string $begin_date 开始日期，为自然月第一天
-     * @param string $end_date 结束日期，为自然月最后一天，限定查询一个月数据
+     * @param string $beginDate 开始日期，为自然月第一天
+     * @param string $endDate 结束日期，为自然月最后一天，限定查询一个月数据
      * @return array
      */
-    public function getWeanalysisAppidMonthlyVisittrend($begin_date, $end_date)
+    public function getWeanalysisAppidMonthlyVisittrend($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidmonthlyvisittrend?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 访问分布
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，限定查询1天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，限定查询1天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidVisitdistribution($begin_date, $end_date)
+    public function getWeanalysisAppidVisitdistribution($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidvisitdistribution?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 日留存
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，限定查询1天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，限定查询1天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidDailyRetaininfo($begin_date, $end_date)
+    public function getWeanalysisAppidDailyRetaininfo($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappiddailyretaininfo?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 周留存
      * @access public
-     * @param string $begin_date 开始日期，为周一日期
-     * @param string $end_date 结束日期，为周日日期，限定查询一周数据
+     * @param string $beginDate 开始日期，为周一日期
+     * @param string $endDate 结束日期，为周日日期，限定查询一周数据
      * @return array
      */
-    public function getWeanalysisAppidWeeklyRetaininfo($begin_date, $end_date)
+    public function getWeanalysisAppidWeeklyRetaininfo($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidweeklyretaininfo?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 月留存
      * @access public
-     * @param string $begin_date 开始日期，为自然月第一天
-     * @param string $end_date 结束日期，为自然月最后一天，限定查询一个月数据
+     * @param string $beginDate 开始日期，为自然月第一天
+     * @param string $endDate 结束日期，为自然月最后一天，限定查询一个月数据
      * @return array
      */
-    public function getWeanalysisAppidMonthlyRetaininfo($begin_date, $end_date)
+    public function getWeanalysisAppidMonthlyRetaininfo($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidmonthlyretaininfo?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 访问页面
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，限定查询1天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，限定查询1天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidVisitPage($begin_date, $end_date)
+    public function getWeanalysisAppidVisitPage($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappidvisitpage?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 
     /**
      * 用户画像
      * @access public
-     * @param string $begin_date 开始日期
-     * @param string $end_date 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，end_date允许设置的最大值为昨日
+     * @param string $beginDate 开始日期
+     * @param string $endDate 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，endDate允许设置的最大值为昨日
      * @return array
      */
-    public function getWeanalysisAppidUserportrait($begin_date, $end_date)
+    public function getWeanalysisAppidUserportrait($beginDate, $endDate)
     {
         $url = 'https://api.weixin.qq.com/datacube/getweanalysisappiduserportrait?access_token=ACCESS_TOKEN';
-        return $this->callPostApi($url, ['begin_date' => $begin_date, 'end_date' => $end_date], true);
+        return $this->callPostApi($url, ['begin_date' => $beginDate, 'end_date' => $endDate], true);
     }
 }
